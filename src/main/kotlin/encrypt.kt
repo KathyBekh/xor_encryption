@@ -28,18 +28,27 @@ fun encryptFile(text: String, key: String, outputName: String ): BufferedWriter 
 }
 
 fun encryptString(str: String, key: String): String {
-    val keyToByte = key.toByte()
-    return String(str.toByteArray().map { it xor keyToByte }.toByteArray())
+    var encryptedString = ""
+    for (i in str.indices) {
+        val keyToByte = key[i % key.length].toString().toInt(16).toByte()
+        encryptedString = String(str.toByteArray().map { it xor keyToByte }.toByteArray())
+    }
+    return encryptedString
 }
 
 fun main() {
+    val ab = '1'
+    println(ab.toString().toBigInteger(16))
+    println(ab.toString().toInt(16))
+    println(ab.toInt())
     val blala = "Hello World! This, work, med, bed, corona, virus, table, cup."
     val ololo = "input/fileForEncrypted"
     println(blala)
-    encryptFile(ololo, "25", "input/fileForDencrypted")
-    encryptFile("input/fileForDencrypted", "25", "input/TowfileForDencrypted")
-    println(encryptString(blala, "25"))
-    println(encryptString(encryptString(blala, "25"), "25"))
+    encryptFile(ololo, "5A2AB1C", "input/fileForDencrypted")
+    encryptFile("input/fileForDencrypted", "5A2AB1C", "input/TowfileForDencrypted")
+    println(encryptString(blala, "5A2AB1C"))
+    println(encryptString("16", "B"))
+    println(encryptString(encryptString(blala, "5A2AB1C"), "5A2AB1C"))
 
 }
 
