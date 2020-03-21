@@ -11,6 +11,13 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.0'
+
+//For multiplatform projects, use "com.github.ajalt:clikt-multiplatform:$cliktVersion" instead. You'll need to use Gradle 6 or newer.
+    implementation("com.github.ajalt:clikt:2.6.0")
+
 }
 
 compileKotlin {
