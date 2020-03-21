@@ -37,7 +37,11 @@ fun encryptFile(text: String, key: String, outputName: String ) {
 }
 
 fun help() {
-    println("Please use -c key inputname.txt -o outputname.txt")
+    println("Строка должна быть вида [-флаг] ключ имя файла для кодирования [-о имя файла закодированного]")
+    println("ключ любое положительное число в 16й системе счисления")
+    println("флаги: закодировать [-с]")
+    println("раскодировать [-d]")
+    println("необязательный параметр [-o], формируется по умолчанию из исходного файла если явно не указан")
 }
 
 
