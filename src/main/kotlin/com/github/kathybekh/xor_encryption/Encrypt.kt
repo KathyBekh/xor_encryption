@@ -1,5 +1,8 @@
 package com.github.kathybekh.xor_encryption
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.options.*
 import java.io.File
 import kotlin.experimental.xor
 
@@ -16,10 +19,37 @@ Command Line: ciphxor [-c key] [-d key] inputname.txt [-o outputname.txt]
 Кроме самой программы, следует написать автоматические тесты к ней.
  */
 
-fun main(args: Array<String>) {
-    encryptFile("input/fileForEncrypted", "BCF12", "out/decrypted")
-    encryptFile("out/decrypted","BCF12", "input/TowfileForDencrypted")
+fun main(args: Array<String>) = Main().main(args)
 
+class Main : CliktCommand() {
+    private val key by option("-c", "-d", help = "use for encrypt [-c key] or for decrypt [-d key]").required()
+    private val inputFile by argument(help = "specify the path to the file")
+    private val outputFile by option("-o", help = "specify the path to the encrypt file")
+    override fun run() {
+        val output = if (outputFile == null) {
+            "$inputFile.txt"
+        } else {
+            outputFile
+        }
+        val validateKey = if (keyValidate(key)) {
+            key
+        } else "the key must be written in hexadecimal notation"
+
+        println(key)
+        println(inputFile)
+        println(output)
+        encryptFile(inputFile, key, output!!)
+        encryptFile(output,key, "text.txt")
+    }
+
+    private fun keyValidate (key: String): Boolean {
+        val permissibleValue = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
+            'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F')
+        for (c in key) {
+            if (c !in permissibleValue) false
+        }
+        return true
+    }
 }
 
 fun encryptFile(text: String, key: String, outputName: String ) {
@@ -36,12 +66,5 @@ fun encryptFile(text: String, key: String, outputName: String ) {
     File(outputName).writeBytes(listForWrite.toByteArray())
 }
 
-fun help() {
-    println("Строка должна быть вида [-флаг] ключ имя файла для кодирования [-о имя файла закодированного]")
-    println("ключ любое положительное число в 16й системе счисления")
-    println("флаги: закодировать [-с]")
-    println("раскодировать [-d]")
-    println("необязательный параметр [-o], формируется по умолчанию из исходного файла если явно не указан")
-}
 
 
