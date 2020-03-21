@@ -19,9 +19,9 @@ Command Line: ciphxor [-c key] [-d key] inputname.txt [-o outputname.txt]
 Кроме самой программы, следует написать автоматические тесты к ней.
  */
 
-fun main(args: Array<String>) = Main().main(args)
+fun main(args: Array<String>) = Ciphxor().main(args)
 
-class Main : CliktCommand() {
+class Ciphxor : CliktCommand() {
     private val key by option("-c", "-d", help = "use for encrypt [-c key] or for decrypt [-d key]").required()
     private val inputFile by argument(help = "specify the path to the file")
     private val outputFile by option("-o", help = "specify the path to the encrypt file")
@@ -31,40 +31,35 @@ class Main : CliktCommand() {
         } else {
             outputFile
         }
-        val validateKey = if (keyValidate(key)) {
-            key
-        } else "the key must be written in hexadecimal notation"
+        if (keyValidate(key)) {
+            encryptFile(inputFile, key, output!!)
+        } else println("the key must be written in hexadecimal notation")
 
-        println(key)
-        println(inputFile)
-        println(output)
-        encryptFile(inputFile, key, output!!)
-        encryptFile(output,key, "text.txt")
     }
 
-    private fun keyValidate (key: String): Boolean {
-        val permissibleValue = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
-            'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F')
+    private fun keyValidate(key: String): Boolean {
+        val permissibleValue = listOf(
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
+            'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'
+        )
         for (c in key) {
-            if (c !in permissibleValue) false
+            if (c !in permissibleValue) return false
         }
         return true
     }
-}
 
-fun encryptFile(text: String, key: String, outputName: String ) {
 
-    val listForWrite = mutableListOf<Byte>()
-    val bytes = File(text).readBytes()
-    var count = 0
-    for (byte in bytes) {
-        val encrypted = byte xor key[count % key.length].toString().toInt(16).toByte()
-        listForWrite.add(encrypted)
+    fun encryptFile(text: String, key: String, outputName: String) {
 
-        count += 1
+        val listForWrite = mutableListOf<Byte>()
+        val bytes = File(text).readBytes()
+        var count = 0
+        for (byte in bytes) {
+            val encrypted = byte xor key[count % key.length].toString().toInt(16).toByte()
+            listForWrite.add(encrypted)
+
+            count += 1
+        }
+        File(outputName).writeBytes(listForWrite.toByteArray())
     }
-    File(outputName).writeBytes(listForWrite.toByteArray())
 }
-
-
-

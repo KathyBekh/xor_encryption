@@ -8,11 +8,11 @@ class Tests {
 
     @Test
     fun encryptAndDecryptFile() {
-        val input = "input/fileForEncrypted";
+        val input = "input/to_encrypt";
         val tmp = "out/encrypted.txt";
         val output = "out/decrypted.txt";
-        encryptFile(input, "BC12", tmp)
-        encryptFile(tmp, "BC12", output)
+//        encryptFile(input, "BC12", tmp)
+//        encryptFile(tmp, "BC12", output)
 
         assertEquals(File(input).readText(), File(output).readText())
     }
