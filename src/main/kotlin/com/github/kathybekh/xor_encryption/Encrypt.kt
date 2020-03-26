@@ -2,8 +2,10 @@ package com.github.kathybekh.xor_encryption
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import java.io.File
+import java.nio.file.Paths
 import kotlin.experimental.xor
 
 
@@ -33,7 +35,7 @@ class Ciphxor : CliktCommand() {
         }
         if (keyValidate(key)) {
             encryptFile(inputFile, key, output!!)
-        } else println("the key must be written in hexadecimal notation")
+        } else println("the key must be written in positive hexadecimal notation")
 
     }
 
@@ -53,12 +55,17 @@ class Ciphxor : CliktCommand() {
 
         val listForWrite = mutableListOf<Byte>()
         val bytes = File(text).readBytes()
+        val path = Paths.get(outputName)
+
         var count = 0
         for (byte in bytes) {
             val encrypted = byte xor key[count % key.length].toString().toInt(16).toByte()
             listForWrite.add(encrypted)
-
             count += 1
+        }
+
+        if (path.nameCount > 1) {
+            path.parent.toFile().mkdirs()
         }
         File(outputName).writeBytes(listForWrite.toByteArray())
     }
