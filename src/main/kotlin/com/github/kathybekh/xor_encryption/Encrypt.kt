@@ -24,19 +24,30 @@ Command Line: ciphxor [-c key] [-d key] inputname.txt [-o outputname.txt]
 fun main(args: Array<String>) = Ciphxor().main(args)
 
 class Ciphxor : CliktCommand() {
+
     private val key by option("-c", "-d", help = "use for encrypt [-c key] or for decrypt [-d key]").required()
     private val inputFile by argument(help = "specify the path to the file")
     private val outputFile by option("-o", help = "specify the path to the encrypt file")
     override fun run() {
+
         val output = if (outputFile == null) {
             "$inputFile.txt"
         } else {
-            outputFile
+            createPath(outputFile!!)
         }
+
         if (keyValidate(key)) {
             encryptFile(inputFile, key, output!!)
         } else println("the key must be written in positive hexadecimal notation")
 
+    }
+
+    fun createPath(path: String): String {
+        val path1 = Paths.get(path)
+        if (path1.nameCount > 1) {
+            path1.parent.toFile().mkdirs()
+        }
+        return path
     }
 
     private fun keyValidate(key: String): Boolean {
@@ -54,8 +65,8 @@ class Ciphxor : CliktCommand() {
     fun encryptFile(text: String, key: String, outputName: String) {
 
         val listForWrite = mutableListOf<Byte>()
-        val bytes = File(text).readBytes()
-        val path = Paths.get(outputName)
+        val bytes = File(text).inputStream().buffered()
+//        val bytes2 = File(text).readBytes()
 
         var count = 0
         for (byte in bytes) {
@@ -64,9 +75,7 @@ class Ciphxor : CliktCommand() {
             count += 1
         }
 
-        if (path.nameCount > 1) {
-            path.parent.toFile().mkdirs()
-        }
         File(outputName).writeBytes(listForWrite.toByteArray())
     }
+
 }
