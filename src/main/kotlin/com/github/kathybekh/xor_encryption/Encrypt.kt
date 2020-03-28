@@ -34,7 +34,7 @@ class CipherXor : CliktCommand() {
         val output = if (outputFile == null) {
             "$inputFile.txt"
         } else {
-            createPath(outputFile!!)
+            createPathForLastElement(outputFile!!)
         }
 
         if (keyValidate(key)) {
@@ -43,16 +43,16 @@ class CipherXor : CliktCommand() {
 
     }
 
-    internal fun createPath(path: String): String {
-        val path1 = Paths.get(path)
-        if (path1.nameCount > 1) {
-            path1.parent.toFile().mkdirs()
+    internal fun createPathForLastElement(path: String): String {
+        val pathWithoutLastElement = Paths.get(path)
+        if (pathWithoutLastElement.nameCount > 1) {
+            pathWithoutLastElement.parent.toFile().mkdirs()
         }
         return path
     }
 
-     internal fun keyValidate(keyV: String): Boolean {
-         if (keyV == "") return false
+    internal fun keyValidate(keyV: String): Boolean {
+        if (keyV == "") return false
         val permissibleValue = listOf(
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
             'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'
@@ -64,12 +64,10 @@ class CipherXor : CliktCommand() {
     }
 
 
-     internal fun encryptFile(text: String, keyE: String, outputName: String) {
-
-
+    internal fun encryptFile(text: String, keyE: String, outputName: String) {
         val bytes = File(text).inputStream().buffered().use { stream ->
             encryptBytes(stream, keyE)
-            }
+        }
         File(outputName).writeBytes(bytes)
     }
 
