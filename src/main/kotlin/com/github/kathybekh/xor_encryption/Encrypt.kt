@@ -39,7 +39,9 @@ class CipherXor : CliktCommand() {
 
         if (keyValidate(key)) {
             encryptFile(inputFile, key, output)
-        } else println("the key must be written in positive hexadecimal notation")
+        } else {
+            println("the key must be written in positive hexadecimal notation")
+        }
 
     }
 
@@ -53,6 +55,7 @@ class CipherXor : CliktCommand() {
 
     internal fun keyValidate(keyV: String): Boolean {
         if (keyV == "") return false
+
         val permissibleValue = listOf(
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
             'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'
@@ -76,7 +79,8 @@ class CipherXor : CliktCommand() {
         val b = mutableListOf<Byte>()
         var count = 0
         for (byte in bytes) {
-            val encrypted = byte xor keyEn[count % keyEn.length].toString().toInt(16).toByte()
+            val encrypted =
+                byte xor keyEn[count % keyEn.length].toString().toInt(16).toByte()
             count += 1
             b.add(encrypted)
         }
